@@ -1,2 +1,2 @@
 # PowerBI-Metrics-Dashboard-
-Example of a metrics dashboard created in Power BI
+This is an example of a Power BI dashboard that displays the enrollment and compliance metrics for a fictional healthcare company 
