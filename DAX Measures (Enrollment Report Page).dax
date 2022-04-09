@@ -1,0 +1,43 @@
+﻿---Enrollment Report Page---
+
+
+---Denials Rate: The % of all applications recived that were denied. 
+
+[DENIALS RATE] = 
+
+VAR DENIALSTOTAL = CALCULATE(SUM(EnrollmentMain[Val]), 
+EnrollmentMain[Metric] = "Denials Volume")
+
+
+VAR APPTOTAL = CALCULATE(SUM(EnrollmentMain[Val]), 
+MonthlySummaries[Business_Area] <> "App Reciepts")
+
+VAR DENIALSRATE = DIVIDE (DENIALSTOTAL, APPTOTAL)
+
+RETURN DENIALSRATE
+
+
+---Incomplete Rate: the % of all applications that were marked as incomplete.
+
+[INCOMPLETE RATE] = 
+
+VAR INCOMPTOTAL = CALCULATE(SUM(EnrollmentMain[Val]), 
+EnrollmentMain[Metric] = "Incomplete Volume")
+
+
+VAR APPTOTAL = CALCULATE(SUM(EnrollmentMain[Val]), 
+MonthlySummaries[Business_Area] <> "App Reciepts")
+
+VAR INCOMPLETERATE = DIVIDE (INCOMPTOTAL, APPTOTAL)
+
+RETURN INCOMPLETERATE
+
+
+---Reporting Label: Label to indicate the reporting month for the dashboard header
+
+REPORTING AS OF LABEL = "Reporting as of " & FORMAT(
+    EOMONTH(TODAY(), -1), ---Note: This dataset is a month behind the actual date, thus the -1 here. If you wanted to use the actual current month you would write EOMONTH(TODAY())
+    "mmmm YYYY"
+)
+
+
