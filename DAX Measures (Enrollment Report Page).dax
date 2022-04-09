@@ -5,37 +5,55 @@
 
 [DENIALS RATE] = 
 
-VAR DENIALSTOTAL = CALCULATE(SUM(EnrollmentMain[Val]), 
-EnrollmentMain[Metric]="Denials Volume")
+VAR DENIALSTOTAL = 
 
-VAR APPTOTAL = CALCULATE(SUM(EnrollmentMain[Val]), 
-MonthlySummaries[Business_Area] <> "App Reciepts")
+    CALCULATE(SUM(EnrollmentMain[Val]), 
+       EnrollmentMain[Metric]="Denials Volume")
 
-VAR DENIALSRATE = DIVIDE(DENIALSTOTAL,APPTOTAL)
+VAR APPTOTAL = 
 
-RETURN DENIALSRATE
+    CALCULATE(SUM(EnrollmentMain[Val]), 
+       MonthlySummaries[Business_Area] <> "App Reciepts")
+
+VAR DENIALSRATE = 
+
+    DIVIDE(DENIALSTOTAL,APPTOTAL)
+
+RETURN 
+
+   DENIALSRATE
 
 
 ---Incompletes Rate: The percent of all applications that were marked as incomplete---
 
 [INCOMPLETE RATE] = 
 
-VAR INCOMPTOTAL = CALCULATE(SUM(EnrollmentMain[Val]), 
-EnrollmentMain[Metric]="Incomplete Volume")
+VAR INCOMPTOTAL = 
 
-VAR APPTOTAL = CALCULATE(SUM(EnrollmentMain[Val]), 
-MonthlySummaries[Business_Area] <> "App Reciepts")
+    CALCULATE(SUM(EnrollmentMain[Val]), 
+       EnrollmentMain[Metric]="Incomplete Volume")
 
-VAR INCOMPLETERATE = DIVIDE(INCOMPTOTAL,APPTOTAL)
+VAR APPTOTAL = 
+   
+    CALCULATE(SUM(EnrollmentMain[Val]), 
+       MonthlySummaries[Business_Area] <> "App Reciepts")
 
-RETURN INCOMPLETERATE
+VAR INCOMPLETERATE = 
+
+    DIVIDE(INCOMPTOTAL,APPTOTAL)
+
+RETURN 
+
+  INCOMPLETERATE
 
 
 ---Reporting Label: Label to indicate the reporting month for the dashboard header
 
-REPORTING AS OF LABEL = "Reporting as of " & FORMAT(
-    EOMONTH(TODAY(), -1), ---This dataset is a month behind the actual date, thus the -1 here.--- 
-    "mmmm YYYY"                ---If you wanted to use the actual current month, use EOMONTH(TODAY())---   
-)
+REPORTING AS OF LABEL = 
+
+   "Reporting as of " & FORMAT(
+       EOMONTH(TODAY(), -1), ---This dataset is a month behind the actual date, thus the -1 here.--- 
+         "mmmm YYYY")           ---If you wanted to use the actual current month, use EOMONTH(TODAY())---   
+
 
 
