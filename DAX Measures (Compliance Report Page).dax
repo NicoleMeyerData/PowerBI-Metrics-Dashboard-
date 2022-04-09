@@ -1,0 +1,124 @@
+﻿---Compliance Report Page Measures---
+
+
+---Percent Change: The percent change in compliant measures from the previous month
+
+% CHANGE = 
+
+VAR PREVMONTH = 
+    CALCULATE(
+        SUM(MonthlySummaries[Compliant]), 
+MonthlySummaries[Business_Area] <> "Overall", ---This filter is only neccesary if you have specific values you want to omit from the formula
+        Month('MonthlySummaries'[Date]) = Month( Now() ) -2, ---This data is a month behind the actual date, thus the -2 here. If you wanted to use the actual precvious month, use -Month(Now())-1
+        Year('MonthlySummaries'[Date]) = Year( Now()))
+
+VAR CURRENTMONTH = 
+    CALCULATE(
+        SUM(MonthlySummaries[Compliant]), 
+MonthlySummaries[Business_Area] <> "Overall", ---See comment in the previous month variable
+        Month('MonthlySummaries'[Date]) = MONTH( Now() ) -1, ---If you wanted to use the actual current month, use MONTH(NOW())
+        Year('MonthlySummaries'[Date]) = Year( Now()))
+
+VAR DIFF = CURRENTMONTH - PREVMONTH
+
+
+VAR PERCENTCHANGE  = 
+DIVIDE(
+      DIFF,
+        PREVMONTH
+    )
+
+Return PERCENTCHANGE
+
+
+---Compliance Percent: The percent of all metrics that are compliant
+
+COMPLIANCE % = CALCULATE(DIVIDE(SUM(MonthlySummaries[Compliant]), SUM(MonthlySummaries[Total_Metrics] )))
+
+
+---Compliance Rate Title: A measure to show the current month in the title of the Compliance Rate card
+
+COMPLIANCE RATE TITLE = "Compliance Rate " & "(" &FORMAT(
+    EOMONTH(TODAY(), -1), ---If you wanted to use the actual current month, use EOMONTH(TODAY())
+    "mmmm YYYY" &")"
+)
+
+
+---Current Year Compliant Rate: The percent of all metrics that are compliant for the current year
+
+CY COMPLIANT RATE = 
+
+var CYSUM =
+
+    CALCULATE( Sum( MonthlySummaries[Total_Metrics]),
+    FILTER('MonthlySummaries', Year('MonthlySummaries'[Date]) = Year( Now() )))
+
+var CYCOMPSUM =
+
+    CALCULATE( Sum( 'MonthlySummaries'[Compliant] ),
+    FILTER('MonthlySummaries', Year('MonthlySummaries'[Date].[Date]) = Year( Now() )))
+
+var CYCOMPRATE = 
+
+    CYCOMPSUM / CYSUM
+
+return
+
+     CYCOMPRATE
+
+
+---Last (Previous) Year Compliant Rate: The percent of all metrics that are compliant for the previous year
+
+LY COMPLIANT RATE = 
+
+var LYSUM =
+
+    CALCULATE( Sum( 'MonthlySummaries'[Total_Metrics] ),
+    FILTER('MonthlySummaries', Year('MonthlySummaries'[Date]) = Year( Now() ) - 1))
+
+
+var LYCOMPSUM =
+
+    CALCULATE( Sum( 'MonthlySummaries'[Compliant] ),
+    FILTER('MonthlySummaries', Year('MonthlySummaries'[Date]) = Year( Now() ) -1))
+
+var LYCOMPRATE = 
+
+    LYCOMPSUM / LYSUM
+
+return
+
+     LYCOMPRATE
+
+
+---Max Month Compliant Rate: The percent of all metrics that are compliant for the most current (max) month
+
+[MAX MONTH COMPLIANT] = 
+
+var MAXMONTH = 
+
+    CALCULATE( MIN( MonthlySummaries[Compliance_Percent]),
+    FILTER( MonthlySummaries, MonthlySummaries[Date] = Max( MonthlySummaries[Date])))
+
+return
+
+    if( isblank( MAXMONTH ), 0, MAXMONTH )
+
+
+---Year to Date Compliant Rate: The year to date compliant rate for the current year
+
+YTD COMPLIANT = 
+
+var YTDCOMP = 
+
+    TotalYTD( Average( MonthlySummaries[Compliance_Percent]),
+    MonthlySummaries[Date])
+
+return 
+
+    if( isblank( YTDCOMP ), 0, YTDCOMP )
+
+
+
+
+
