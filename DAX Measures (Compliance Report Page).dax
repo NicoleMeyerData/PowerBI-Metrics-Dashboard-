@@ -6,13 +6,15 @@
 % CHANGE = 
 
 VAR PREVMONTH = 
-CALCULATE(
-  SUM(MonthlySummaries[Compliant]), 
-    MonthlySummaries[Business_Area] <> "Overall", ---This filter is only necessary if you have specific values you want to omit from the formula---
-        MONTH('MonthlySummaries'[Date])=MONTH(NOW())-2, ---This data is a month behind the actual date, thus the -2 here.---
-          YEAR('MonthlySummaries'[Date])=YEAR(NOW()))        ---If you wanted to use the actual previous month, use -Month(Now())-1---
+
+    CALCULATE(
+      SUM(MonthlySummaries[Compliant]), 
+        MonthlySummaries[Business_Area] <> "Overall", ---This filter is only necessary if you have specific values you want to omit from the formula---
+          MONTH('MonthlySummaries'[Date])=MONTH(NOW())-2, ---This data is a month behind the actual date, thus the -2 here.---
+            YEAR('MonthlySummaries'[Date])=YEAR(NOW()))        ---If you wanted to use the actual previous month, use -Month(Now())-1---
 
 VAR CURRENTMONTH = 
+
     CALCULATE(
       SUM(MonthlySummaries[Compliant]), 
         MonthlySummaries[Business_Area] <> "Overall", ---See comment in the previous month variable---
@@ -23,7 +25,9 @@ VAR DIFF = CURRENTMONTH-PREVMONTH
 
 VAR PERCENTCHANGE = DIVIDE(DIFF,PREVMONTH)
 
-RETURN PERCENTCHANGE
+RETURN 
+
+  PERCENTCHANGE
 
 
 ---Compliance Percent: The percent of all metrics that are compliant---
@@ -33,9 +37,11 @@ COMPLIANCE % = CALCULATE(DIVIDE(SUM(MonthlySummaries[Compliant]),SUM(MonthlySumm
 
 ---Compliance Rate Title: A measure to show the current month in the title of the Compliance Rate card---
 
-COMPLIANCE RATE TITLE = "Compliance Rate " & "(" 
-   & FORMAT(EOMONTH(TODAY(),-1), ---If you wanted to use the actual current month, use EOMONTH(TODAY())
-        "mmmm YYYY" &")"
+COMPLIANCE RATE TITLE = 
+
+      "Compliance Rate " & "(" 
+          & FORMAT(EOMONTH(TODAY(),-1), ---If you wanted to use the actual current month, use EOMONTH(TODAY())
+                "mmmm YYYY" &")"
 )
 
 
@@ -45,13 +51,13 @@ CY COMPLIANT RATE =
 
 VAR CYSUM =
 
-    CALCULATE(SUM( MonthlySummaries[Total_Metrics]),
-    FILTER('MonthlySummaries', YEAR('MonthlySummaries'[Date])=YEAR(NOW())))
+    CALCULATE(SUM(MonthlySummaries[Total_Metrics]),
+       FILTER('MonthlySummaries',YEAR('MonthlySummaries'[Date])=YEAR(NOW())))
 
 VAR CYCOMPSUM =
 
-    CALCULATE(SUM( 'MonthlySummaries'[Compliant] ),
-    FILTER('MonthlySummaries', YEAR('MonthlySummaries'[Date].[Date])=YEAR(NOW())))
+     CALCULATE(SUM('MonthlySummaries'[Compliant] ),
+       FILTER('MonthlySummaries',YEAR('MonthlySummaries'[Date].[Date])=YEAR(NOW())))
 
 VAR CYCOMPRATE = 
 
@@ -59,7 +65,7 @@ VAR CYCOMPRATE =
 
 RETURN
 
-     CYCOMPRATE
+  CYCOMPRATE
 
 
 ---Last (Previous) Year Compliant Rate: The percent of all metrics that are compliant for the previous year---
@@ -68,14 +74,14 @@ LY COMPLIANT RATE =
 
 VAR LYSUM =
 
-    CALCULATE(SUM( 'MonthlySummaries'[Total_Metrics] ),
-    FILTER('MonthlySummaries', YEAR('MonthlySummaries'[Date])=YEAR(NOW())-1))
+    CALCULATE(SUM('MonthlySummaries'[Total_Metrics] ),
+       FILTER('MonthlySummaries', YEAR('MonthlySummaries'[Date])=YEAR(NOW())-1))
 
 
 VAR LYCOMPSUM =
 
-    CALCULATE(SUM( 'MonthlySummaries'[Compliant]),
-    FILTER('MonthlySummaries', YEAR('MonthlySummaries'[Date])=YEAR(Now())-1))
+    CALCULATE(SUM('MonthlySummaries'[Compliant]),
+       FILTER('MonthlySummaries',YEAR('MonthlySummaries'[Date])=YEAR(Now())-1))
 
 VAR LYCOMPRATE = 
 
@@ -83,7 +89,7 @@ VAR LYCOMPRATE =
 
 RETURN
 
-     LYCOMPRATE
+   LYCOMPRATE
 
 
 ---Max Month Compliant Rate: The percent of all metrics that are compliant for the most current (max) month---
@@ -93,9 +99,11 @@ RETURN
 VAR MAXMONTH = 
 
     CALCULATE(MIN( MonthlySummaries[Compliance_Percent]),
-    FILTER(MonthlySummaries, MonthlySummaries[Date]=MAX(MonthlySummaries[Date])))
+      FILTER(MonthlySummaries, MonthlySummaries[Date]=MAX(MonthlySummaries[Date])))
 
-RETURN IF(ISBLANK(MAXMONTH),0,MAXMONTH)
+RETURN 
+
+  IF(ISBLANK(MAXMONTH),0,MAXMONTH)
 
 
 ---Year to Date Compliant Rate: The year to date compliant rate for the current year---
@@ -104,10 +112,12 @@ YTD COMPLIANT =
 
 VAR YTDCOMP = 
 
-    TotalYTD(AVERAGE( MonthlySummaries[Compliance_Percent]),
-    MonthlySummaries[Date])
+    TotalYTD(AVERAGE(MonthlySummaries[Compliance_Percent]),
+      MonthlySummaries[Date])
 
-RETURN IF(ISBLANK(YTDCOMP),0,YTDCOMP)
+RETURN 
+
+  IF(ISBLANK(YTDCOMP),0,YTDCOMP)
 
 
 
