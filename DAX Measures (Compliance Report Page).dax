@@ -86,7 +86,7 @@ RETURN
      LYCOMPRATE
 
 
----Max Month Compliant Rate: The percent of all metrics that are compliant for the most current (max) month
+---Max Month Compliant Rate: The percent of all metrics that are compliant for the most current (max) month---
 
 [MAX MONTH COMPLIANT] = 
 
@@ -95,9 +95,7 @@ VAR MAXMONTH =
     CALCULATE(MIN( MonthlySummaries[Compliance_Percent]),
     FILTER(MonthlySummaries, MonthlySummaries[Date]=MAX(MonthlySummaries[Date])))
 
-RETURN
-
-    IF(ISBLANK(MAXMONTH),0,MAXMONTH)
+RETURN IF(ISBLANK(MAXMONTH),0,MAXMONTH)
 
 
 ---Year to Date Compliant Rate: The year to date compliant rate for the current year---
@@ -109,9 +107,7 @@ VAR YTDCOMP =
     TotalYTD(AVERAGE( MonthlySummaries[Compliance_Percent]),
     MonthlySummaries[Date])
 
-RETURN
-
-    IF(ISBLANK(YTDCOMP),0,YTDCOMP)
+RETURN IF(ISBLANK(YTDCOMP),0,YTDCOMP)
 
 
 
