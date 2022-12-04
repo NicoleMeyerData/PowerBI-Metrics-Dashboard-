@@ -56,7 +56,7 @@ VAR CYSUM =
 
 VAR CYCOMPSUM =
 
-     CALCULATE(SUM('MonthlySummaries'[Compliant] ),
+     CALCULATE(SUM('MonthlySummaries'[Compliant]),
        FILTER('MonthlySummaries',YEAR('MonthlySummaries'[Date].[Date])=YEAR(NOW())))
 
 VAR CYCOMPRATE = 
@@ -98,7 +98,7 @@ RETURN
 
 VAR MAXMONTH = 
 
-    CALCULATE(MIN( MonthlySummaries[Compliance_Percent]),
+    CALCULATE(MIN(MonthlySummaries[Compliance_Percent]),
       FILTER(MonthlySummaries, MonthlySummaries[Date]=MAX(MonthlySummaries[Date])))
 
 RETURN 
